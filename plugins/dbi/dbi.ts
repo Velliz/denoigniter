@@ -124,16 +124,31 @@ class DBI {
         return res
     }
 
-    run(where:any) {
-
+    public async run(procedure:string) {
+        let res = await this.client.execute(procedure)
+        
+        await this.client.close()
+        
+        return res
     }
 
-    firstRow(where:any) {
-
+    public async firstRow(sql:string, param:any) {
+        let res = await this.client.query(sql, param)
+        
+        await this.client.close()
+        
+        if (res[0] === undefined) {
+            return null
+        }
+        return res[0]
     }
 
-    getData(where:any) {
-
+    public async getData(sql:string, param:any) {
+        let res = await this.client.query(sql, param)
+        
+        await this.client.close()
+        
+        return res
     }
 
 }
