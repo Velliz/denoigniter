@@ -40,7 +40,7 @@ class DBI {
             }
             pos++
         }
-        sql += `)`
+        sql += `);`
         
         let res = await this.client.execute(sql, values)
         
@@ -49,12 +49,79 @@ class DBI {
         return res
     }
 
-    update(where:any, data:any) {
+    public async update(table:string, where:any, data:any) {
+        this.client = await new MySqlClient().connect({
+            hostname: mysql.host,
+            username: mysql.user,
+            db: mysql.dbName,
+            password: mysql.pass,
+        })
 
+        let sql = `UPDATE ${table} SET `
+        let length = Object.keys(data).length
+        let values = []
+        let pos = 0
+        for (const k in data) {
+            values.push(data[k])
+            if ((length - 1) !== pos) {
+                sql += `\`${k}\` = ?, `
+            } else {
+                sql += `\`${k}\` = ?`
+            }
+            pos++
+        }
+        sql += ` WHERE `
+        length = Object.keys(where).length
+        pos = 0
+        for(const k in where) {
+            values.push(where[k])
+            if ((length - 1) !== pos) {
+                sql += `\`${k}\` = ?, `
+            } else {
+                sql += `\`${k}\` = ?`
+            }
+            pos++
+        }
+        sql += `;`
+
+        let res = await this.client.execute(sql, values)
+        
+        await this.client.close()
+        
+        return res
     }
 
-    delete(where:any) {
+    public async delete(table:string, where:any) {
+        this.client = await new MySqlClient().connect({
+            hostname: mysql.host,
+            username: mysql.user,
+            db: mysql.dbName,
+            password: mysql.pass,
+        })
 
+        let sql = `DELETE FROM ${table} WHERE `
+        let length = Object.keys(where).length
+        let values = []
+        let pos = 0
+        for(const k in where) {
+            values.push(where[k])
+            if ((length - 1) !== pos) {
+                sql += `\`${k}\` = ? AND `
+            } else {
+                sql += `\`${k}\` = ?`
+            }
+            pos++
+        }
+        sql += `;`
+
+        console.log(sql, values)
+
+
+        let res = await this.client.execute(sql, values)
+        
+        await this.client.close()
+        
+        return res
     }
 
     run(where:any) {
