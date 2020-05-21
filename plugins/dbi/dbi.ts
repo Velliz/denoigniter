@@ -125,6 +125,13 @@ class DBI {
     }
 
     public async run(procedure:string) {
+        this.client = await new MySqlClient().connect({
+            hostname: mysql.host,
+            username: mysql.user,
+            db: mysql.dbName,
+            password: mysql.pass,
+        })
+
         let res = await this.client.execute(procedure)
         
         await this.client.close()
@@ -133,6 +140,13 @@ class DBI {
     }
 
     public async firstRow(sql:string, param:any) {
+        this.client = await new MySqlClient().connect({
+            hostname: mysql.host,
+            username: mysql.user,
+            db: mysql.dbName,
+            password: mysql.pass,
+        })
+
         let res = await this.client.query(sql, param)
         
         await this.client.close()
@@ -144,6 +158,13 @@ class DBI {
     }
 
     public async getData(sql:string, param:any) {
+        this.client = await new MySqlClient().connect({
+            hostname: mysql.host,
+            username: mysql.user,
+            db: mysql.dbName,
+            password: mysql.pass,
+        })
+        
         let res = await this.client.query(sql, param)
         
         await this.client.close()

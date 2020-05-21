@@ -7,13 +7,7 @@ import DBI from "../plugins/dbi/dbi.ts"
 const getSamples = async ({ response }:{ response: any }) => {
 
     let db = new DBI()
-    let x = await db.save(`users`, 
-        {
-            name: "Velliz",
-            age: 27,
-            gadget: "Samsung"
-        }
-    )
+    let x = await db.firstRow(`SELECT * FROM users`, [])
 
     response.body = {
         success: true,
